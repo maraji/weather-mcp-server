@@ -19,10 +19,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8081
+ENV PORT=10000
 
-# Expose port (Smithery uses 8081)
-EXPOSE 8081
+# Expose default Render port. The app still reads the actual PORT env variable.
+EXPOSE 10000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
@@ -30,4 +30,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Run the MCP server
 CMD ["python", "server.py"]
-

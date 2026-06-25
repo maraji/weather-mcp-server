@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: weather-mcp-server
+    runtime: docker
+    repo: https://github.com/maraji/weather-mcp-server
+    branch: main
+    plan: free
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
