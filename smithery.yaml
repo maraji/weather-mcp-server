@@ -2,8 +2,8 @@ name: weather-mcp-server
 displayName: Weather MCP Server
 description: Real-time weather query MCP server based on HelloAgents framework
 version: 1.0.0
-author: HelloAgents Team
-homepage: https://github.com/yourusername/weather-mcp-server
+author: maraji
+homepage: https://github.com/maraji/weather-mcp-server
 license: MIT
 categories:
   - weather
@@ -26,4 +26,3 @@ tools:
     description: List all supported cities
   - name: get_server_info
     description: Get server information
-
