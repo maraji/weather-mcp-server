@@ -1,5 +1,5 @@
 # Multi-stage build for weather-mcp-server
-FROM python:3.12-slim-bookworm as base
+FROM python:3.12-slim-bookworm AS base
 
 # Set working directory
 WORKDIR /app

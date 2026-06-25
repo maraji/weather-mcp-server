@@ -6,10 +6,16 @@ import requests
 import os
 from datetime import datetime
 from typing import Dict, Any
-from hello_agents.protocols import MCPServer
+from mcp.server.fastmcp import FastMCP
 
 # 创建 MCP 服务器
-weather_server = MCPServer(name="weather-server", description="真实天气查询服务")
+weather_server = FastMCP(
+    name="weather-server",
+    instructions="真实天气查询服务",
+    host=os.getenv("HOST", "0.0.0.0"),
+    port=int(os.getenv("PORT", 10000)),
+    streamable_http_path="/mcp",
+)
 
 CITY_MAP = {
     "北京": "Beijing", "上海": "Shanghai", "广州": "Guangzhou",
@@ -41,6 +47,7 @@ def get_weather_data(city: str) -> Dict[str, Any]:
 
 
 # 定义工具函数
+@weather_server.tool()
 def get_weather(city: str) -> str:
     """获取指定城市的当前天气"""
     try:
@@ -50,12 +57,14 @@ def get_weather(city: str) -> str:
         return json.dumps({"error": str(e), "city": city}, ensure_ascii=False)
 
 
+@weather_server.tool()
 def list_supported_cities() -> str:
     """列出所有支持的中文城市"""
     result = {"cities": list(CITY_MAP.keys()), "count": len(CITY_MAP)}
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
+@weather_server.tool()
 def get_server_info() -> str:
     """获取服务器信息"""
     info = {
@@ -66,15 +75,9 @@ def get_server_info() -> str:
     return json.dumps(info, ensure_ascii=False, indent=2)
 
 
-# 注册工具到服务器
-weather_server.add_tool(get_weather)
-weather_server.add_tool(list_supported_cities)
-weather_server.add_tool(get_server_info)
-
-
 if __name__ == "__main__":
     # Smithery requires HTTP transport on PORT environment variable
-    port = int(os.getenv("PORT", 8081))
+    port = int(os.getenv("PORT", 10000))
     host = os.getenv("HOST", "0.0.0.0")
 
     print(f"🌤️  Starting Weather MCP Server...")
@@ -84,6 +87,5 @@ if __name__ == "__main__":
     print(f"🔗 Endpoint: http://{host}:{port}/mcp")
     print(f"✨ Ready to serve weather data!")
 
-    # Run with HTTP transport (required by Smithery)
-    weather_server.run(transport="http", host=host, port=port)
-
+    # Run with Streamable HTTP transport (required by Smithery URL publishing)
+    weather_server.run(transport="streamable-http")
